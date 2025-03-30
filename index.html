@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乾卦到坤卦的卦变</title>
+    <style>
+        body {
+   font-family: 'SimSun', '宋体', serif;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   height: 100vh;
+  background-image: url('file:///i:/Users/Desktop/易经的卦变/1.jpg'); 
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+   margin: 0; 
+   padding: 60px; /* 放大3倍 */
+            color: #FFD700; /* 默认文字颜色为金黄色 */
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 90px; /* 放大3倍 */
+            color: #FFD700;
+            text-shadow: -1.5px 0 #000, 0 1.5px #000, 1.5px 0 #000, 0 -1.5px #000;  /* 放大3倍 */
+            font-size: 72px; /* 放大3倍 */
+        }
+        
+        .hexagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 90px; /* 放大3倍 */
+        }
+        
+        .hexagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .yao {
+            width: 360px; /* 放大3倍 */
+            height: 36px; /* 放大3倍 */
+            margin: 18px 0; /* 放大3倍 */
+            position: relative;
+        }
+        
+        .yin {
+            background-color: transparent;
+        }
+        
+        .yin::before, .yin::after {
+            content: "";
+            position: absolute;
+            height: 36px; /* 放大3倍 */
+            width: 150px; /* 放大3倍 */
+            background-color: #1a73e8;
+            top: 0;
+        }
+        
+        .yin::before {
+            left: 0;
+        }
+        
+        .yin::after {
+            right: 0;
+        }
+        
+        .yang {
+            background-color: #ea4335;
+        }
+        
+        .explanation {
+            max-width: 1800px; /* 放大3倍 */
+            text-align: center;
+            line-height: 1.6;
+            color: #FFD700;
+            text-shadow: -1.5px 0 #000, 0 1.5px #000, 1.5px 0 #000, 0 -1.5px #000;  /* 放大3倍 */
+            margin-top: 60px; /* 放大3倍 */
+            font-size: 48px; /* 放大3倍 */
+        }
+        
+        .step-counter {
+            margin-top: 45px; /* 放大3倍 */
+            font-size: 54px; /* 放大3倍 */
+            webkit-text-stroke: 3px #000; /* 放大3倍 */
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: -1.5px 0 #000, 0 1.5px #000, 1.5px 0 #000, 0 -1.5px #000;  /* 放大3倍 */
+       }
+        
+        .color-legend {
+            display: flex;
+            justify-content: center;
+            gap: 60px; /* 放大3倍 */
+            margin-top: 45px; /* 放大3倍 */
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* 放大3倍 */
+            font-size: 36px; /* 放大3倍 */
+        }
+        
+        .legend-yang {
+            display: inline-block;
+            width: 60px; /* 放大3倍 */
+            height: 12px; /* 放大3倍 */
+            background-color: #ea4335;
+        }
+        
+        .legend-yin {
+            display: inline-block;
+            width: 60px; /* 放大3倍 */
+            height: 12px; /* 放大3倍 */
+            background-color: #1a73e8;
+        }
+        
+        .bagua-symbol {
+            font-size: 72px; /* 放大3倍 */
+            margin: 0 6px; /* 放大3倍 */
+            text-shadow: -1.5px 0 #000, 0 1.5px #000, 1.5px 0 #000, 0 -1.5px #000;  /* 放大3倍 */
+        }
+        
+        @supports not (-webkit-text-stroke: 3px #000) {
+          .explanation {
+            text-shadow: 
+              -3px -3px 0 #000,  
+              3px -3px 0 #000,
+              -3px 3px 0 #000,
+              3px 3px 0 #000;
+          }
+        }
+    </style>
+</head>
+<body>
+    <h1>乾☰卦到坤☷卦的卦变</h1>
+    
+    <div class="hexagram-container">
+        <div class="hexagram" id="hexagram">
+            <div class="yao yang" id="yao6"></div> <!-- 第六爻（最上） -->
+            <div class="yao yang" id="yao5"></div>
+            <div class="yao yang" id="yao4"></div>
+            <div class="yao yang" id="yao3"></div>
+            <div class="yao yang" id="yao2"></div>
+            <div class="yao yang" id="yao1"></div> <!-- 第一爻（最下） -->
+        </div>
+        
+        <div class="step-counter">
+            当前状态: <span id="current-step">乾☰卦 (全阳)</span>
+        </div>
+        
+        <div class="color-legend">
+            <div class="legend-item">
+                <span class="legend-yang"></span>
+                <span>阳爻</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-yin"></span>
+                <span>阴爻</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="explanation" id="explanation">
+        乾☰卦代表天，纯阳之象；坤☷卦代表地，纯阴之象。<br>
+        自动循环展示从乾卦到坤卦再到乾卦的变化过程。
+    </div>
+
+    <script>
+        const yaos = [
+            document.getElementById('yao1'), // 第一爻（最下）
+            document.getElementById('yao2'),
+            document.getElementById('yao3'),
+            document.getElementById('yao4'),
+            document.getElementById('yao5'),
+            document.getElementById('yao6')  // 第六爻（最上）
+        ];
+        
+        const currentStepDisplay = document.getElementById('current-step');
+        const explanation = document.getElementById('explanation');
+        
+        let currentStep = 0;
+        const totalSteps = 6;
+        let isReversePhase = false;
+        
+        const stepDescriptions = [
+            "乾☰卦 (全阳)",
+            "第一爻变阴 (天☰风☴姤䷫)",
+            "第二爻变阴 (天☰山☶遁䷠)",
+            "第三爻变阴 (天☰地☷否䷋)",
+            "第四爻变阴 (风☴地☷观䷓)",
+            "第五爻变阴 (山☶地☷剥䷖)",
+            "坤☷卦 (全阴)",
+            "第一爻变阳 (地☷雷☳复䷗)",
+            "第二爻变阳 (地☷水☵师䷆)",
+            "第三爻变阳 (地☷山☶谦䷎)",
+            "第四爻变阳 (雷☳地☷豫䷏)",
+            "第五爻变阳 (水☵地☷比䷇)",
+            "乾☰卦 (全阳)"
+        ];
+        
+        const stepExplanations = [
+            "乾☰卦：纯阳之卦，象征天、刚健、创始",
+            "天风姤䷫：乾☰卦初爻变，一阴遇五阳，象征相遇",
+            "天山遁䷠：乾☰卦二爻变，阴气渐长，象征退避",
+            "天地否䷋：乾☰卦三爻变，天地不交，象征闭塞",
+            "风地观䷓：乾☰卦四爻变，风行地上，象征观察",
+            "山地剥䷖：乾☰卦五爻变，山附于地，象征剥落",
+            "坤☷卦：纯阴之卦，象征地、柔顺、承载",
+            "地雷复䷗：坤☷卦初爻变，一阳来复，象征回复",
+            "地水师䷆：坤☷卦二爻变，地下藏水，象征军队",
+            "地山谦䷎：坤☷卦三爻变，山藏地下，象征谦虚",
+            "雷地豫䷏：坤☷卦四爻变，雷出地奋，象征愉悦",
+            "水地比䷇：坤☷卦五爻变，水附于地，象征亲附",
+            "乾☰卦：纯阳之卦，象征天、刚健、创始"
+        ];
+        
+        function updateHexagram() {
+            // 更新每一爻的状态
+            for (let i = 0; i < yaos.length; i++) {
+                if (isReversePhase) {
+                    // 阴变阳阶段：从下往上变
+                    if (i < currentStep) {
+                        yaos[i].className = 'yao yang';
+                    } else {
+                        yaos[i].className = 'yao yin';
+                    }
+                } else {
+                    // 阳变阴阶段：从下往上变
+                    if (i < currentStep) {
+                        yaos[i].className = 'yao yin';
+                    } else {
+                        yaos[i].className = 'yao yang';
+                    }
+                }
+            }
+            
+            // 更新状态描述
+            const stepIndex = currentStep + (isReversePhase ? 6 : 0);
+            currentStepDisplay.textContent = stepDescriptions[stepIndex];
+            explanation.innerHTML = stepExplanations[stepIndex];
+        }
+        
+        function nextStep() {
+            if (!isReversePhase) {
+                // 阳变阴阶段
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    if (currentStep === totalSteps) {
+                        isReversePhase = true;
+                        currentStep = 0;
+                    }
+                }
+            } else {
+                // 阴变阳阶段
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    if (currentStep === totalSteps) {
+                        isReversePhase = false;
+                        currentStep = 0;
+                    }
+                }
+            }
+            updateHexagram();
+        }
+        
+        // 自动播放
+        setInterval(() => {
+            nextStep();
+        }, 2000);
+        
+        // 初始化
+        updateHexagram();
+    </script>
+</body>
+</html>
